@@ -15,13 +15,14 @@ export default function TaskForm({ task, onClose, onSave, onDelete, currentPerso
   const isEdit = !!task;
   const isAdmin = currentPersona.role === 'Admin';
   
-  // Rule: Employees can only edit tasks assigned to them.
+  // Rule: Employees can edit tasks assigned to them or created/assigned by them.
   const isAssignedToMe = task ? task.assignee === currentPersona.email : false;
+  const isCreatedByMe = task ? task.assignor === currentPersona.email : false;
   
   // Can current persona edit this task?
   // - Admin can edit anything
-  // - Employee can only edit if assigned to them (and only status, checked later)
-  const canEdit = isAdmin || (isEdit && isAssignedToMe);
+  // - Employee can edit if they created it, or if it is assigned to them
+  const canEdit = isAdmin || (isEdit && (isAssignedToMe || isCreatedByMe));
 
   // States
   const [title, setTitle] = useState('');
@@ -126,7 +127,8 @@ export default function TaskForm({ task, onClose, onSave, onDelete, currentPerso
         setError('Bạn không có quyền chỉnh sửa công việc này!');
         return;
       }
-      if (!isAdmin && isAssignedToMe) {
+      // If employee, let them edit everything they created. But if they didn't create it and only got assigned, restrict to status only.
+      if (!isAdmin && isAssignedToMe && !isCreatedByMe) {
         // Person is an employee and is editing. They are ONLY allowed to edit STATUS.
         // We override any potential hacks by copying only status and keeping everything else relative to original task!
         onSave({
@@ -143,15 +145,9 @@ export default function TaskForm({ task, onClose, onSave, onDelete, currentPerso
         });
         return;
       }
-    } else {
-      // In create mode: ONLY admins are allowed to create tasks
-      if (!isAdmin) {
-        setError('Chỉ Quản trị viên (Admin) mới có quyền tạo công việc mới!');
-        return;
-      }
     }
 
-    // Saved by Admin
+    // Saved by User
     onSave({
       id: task?.id,
       title,
@@ -168,17 +164,13 @@ export default function TaskForm({ task, onClose, onSave, onDelete, currentPerso
 
   const handleDeleteClick = () => {
     if (isEdit && task && onDelete) {
-      if (!isAdmin) {
-        setError('Chỉ Quản trị viên (Admin) mới có quyền xóa công việc!');
-        return;
-      }
       onDelete(task.id);
     }
   };
 
   // Determine if fields are locked (employee restriction)
-  // If editing and normal user, fields are locked.
-  const isFieldsLocked = isEdit && !isAdmin;
+  // If editing, normal user, and didn't create it, fields are locked.
+  const isFieldsLocked = isEdit && !isAdmin && !isCreatedByMe;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-200">
@@ -213,7 +205,7 @@ export default function TaskForm({ task, onClose, onSave, onDelete, currentPerso
             <div className="p-3 bg-teal-500/10 border border-teal-500/20 text-teal-400 rounded-xl flex items-start space-x-2 text-xs">
               <Shield className="w-4 h-4 mt-0.5 shrink-0" />
               <div>
-                <span className="font-semibold">Bạn đang là Nhân viên:</span> Hệ thống khóa toàn bộ các trường dữ liệu của công việc và chỉ cho phép bạn điều chỉnh <strong className="underline text-teal-300">Trạng thái công việc</strong> của riêng bạn.
+                <span className="font-semibold">Bạn đang là Nhân viên:</span> Hệ thống khóa các trường dữ liệu chính của công việc này (vì do tài khoản khác tạo/giao) và chỉ cho phép bạn điều chỉnh <strong className="underline text-teal-300">Trạng thái công việc</strong>.
               </div>
             </div>
           )}
@@ -468,7 +460,7 @@ export default function TaskForm({ task, onClose, onSave, onDelete, currentPerso
 
           {/* Footer Action Buttons */}
           <div className="pt-4 border-t border-slate-800 flex space-x-3">
-            {isEdit && isAdmin && onDelete && (
+            {isEdit && onDelete && (
               <button
                 type="button"
                 id="delete-task-btn"

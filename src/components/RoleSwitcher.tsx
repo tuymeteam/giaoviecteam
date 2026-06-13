@@ -106,7 +106,7 @@ export default function RoleSwitcher({ currentPersona, onPersonaChange }: RoleSw
               </p>
               <ul className="list-disc pl-3.5 space-y-0.5">
                 <li><strong className="text-amber-400 text-[10px]">Admin (Trưởng nhóm):</strong> Có toàn quyền Thêm, Sửa tất cả các trường, và Xóa mọi công việc.</li>
-                <li><strong className="text-emerald-400 text-[10px]">Nhân viên:</strong> Chỉ có quyền cập nhật <strong className="text-slate-300">Trạng thái</strong> đối với các công việc được giao cho họ (Khóa không cho sửa Tên, Chi tiết, Hạn, Người thực hiện, và không được Xóa).</li>
+                <li><strong className="text-emerald-400 text-[10px]">Nhân viên:</strong> Được phép <strong className="text-slate-300">Thêm mới công việc</strong> và <strong className="text-slate-300">Xóa công việc</strong>. Đối với việc chỉnh sửa: được toàn quyền sửa những việc do bản thân tạo ra; đối với việc do người khác giao, chỉ cho phép cập nhật Trạng thái.</li>
               </ul>
             </div>
           </div>

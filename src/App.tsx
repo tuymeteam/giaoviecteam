@@ -281,7 +281,7 @@ export default function App() {
         </div>
         
         <p className="text-slate-400 leading-normal font-medium">
-          Ứng dụng thiết kế theo đặc điểm kỹ thuật của AppSheet: View nhóm trạng thái, lát cắt <strong>Việc của tôi</strong>, Bot <strong>Automation gửi email</strong> khi có việc mới, <strong>Bảo mật phân quyền</strong> khóa các cột thông tin dựa trên email vai trò (Admin vs Nhân viên).
+          Ứng dụng thiết kế theo đặc điểm kỹ thuật của AppSheet: View nhóm trạng thái, lát cắt <strong>Việc của tôi</strong>, Bot <strong>Automation gửi email</strong> khi có việc mới. <strong>Bảo mật phân quyền</strong>: Thao tác Thêm và Xóa đã được mở cho cả Nhân viên và Admin.
         </p>
       </div>
 
@@ -408,8 +408,8 @@ export default function App() {
           )}
         </main>
 
-        {/* Global sticky Floater add action Button: only visible for ADMINS */}
-        {isAdmin && activeTab !== 'automation' && activeTab !== 'notifications' && (
+        {/* Global sticky Floater add action Button: visible for both Admin and Employee */}
+        {activeTab !== 'automation' && activeTab !== 'notifications' && (
           <div className="absolute bottom-18 right-4 z-40">
             <button
               type="button"
@@ -419,7 +419,7 @@ export default function App() {
                 setIsFormOpen(true);
               }}
               className="p-3 bg-gradient-to-r from-sky-400 to-indigo-500 rounded-full text-slate-950 font-extrabold shadow-xl hover:scale-105 active:scale-95 hover:brightness-115 transition flex items-center space-x-1.5 cursor-pointer"
-              title="Thêm Công việc mới (Chỉ dành cho Admin)"
+              title="Thêm Công việc mới (Dành cho Admin và Nhân viên)"
             >
               <PlusCircle className="w-5 h-5 fill-current" />
               <span className="text-xs font-bold font-sans pr-1">Thêm Việc</span>
