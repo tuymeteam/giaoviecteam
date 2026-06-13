@@ -1,0 +1,6 @@
+{
+  "name": "Quản lý Công việc Mobile",
+  "description": "Ứng dụng quản lý công việc tối ưu di động với các View nhóm, Lịch, Lát cắt việc riêng, Bot tự động gửi thông báo và Phân quyền bảo mật.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
